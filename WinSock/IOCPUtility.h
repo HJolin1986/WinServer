@@ -9,7 +9,7 @@
 **************************************************************************/
 
 #pragma once
-#include <sqltypes.h>
+
 #include <winsock2.h>
 #include <mswsock.h>
 
@@ -52,7 +52,8 @@ class CIOCPUtility
 public:
 	CIOCPUtility(void);
 	~CIOCPUtility(void);
-	bool Start(int iPort, int iMaxConnections, int iMaxFreeBuffer, int iMaxFreeContext, int iInitialRead);
+	bool Start(int nPort=4567, int nMaxConnections=2000, int nMaxFreeBuffer=200, 
+		int nMaxFreeContext=100, int nInitialRead=5);
 	void ShutDown(void);
 	void CloseAConnection(CIOCPContext* pContext);
 	void CloseAllConnections(void);

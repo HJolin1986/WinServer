@@ -80,7 +80,7 @@ CIOCPUtility::~CIOCPUtility(void)
 }
 
 
-bool CIOCPUtility::Start(int nPort, int nMaxConnections, int nMaxFreeBuffer, 
+bool CIOCPUtility::Start(int nPort, int nMaxConnections, int nMaxFreeBuffer,
 						int nMaxFreeContext, int nInitialRead)
 {
 	// check if it has started
@@ -107,6 +107,8 @@ bool CIOCPUtility::Start(int nPort, int nMaxConnections, int nMaxFreeBuffer,
 		m_bServerStarted = FALSE;
 		goto FEND;
 	}
+	::listen(m_sListen,200);
+	m_hCompletion = ::CreateIoCompletionPort(INVALID_HANDLE_VALUE,0,0,0);
 	// load AcceptEX
 	GUID GuidAcceptEx = WSAID_ACCEPTEX;
 	DWORD dwBytes;
@@ -119,8 +121,8 @@ bool CIOCPUtility::Start(int nPort, int nMaxConnections, int nMaxFreeBuffer,
 		&dwBytes,
 		NULL,
 		NULL);
-	// load GetAcceptExSockAddrs
 
+	// load GetAcceptExSockAddrs
 	GUID GuidAcceptExSockAddrs = WSAID_GETACCEPTEXSOCKADDRS;
 	::WSAIoctl(m_sListen, 
 		SIO_GET_EXTENSION_FUNCTION_POINTER,
@@ -291,7 +293,7 @@ void CIOCPUtility::FreeBuffers()
 		if(!::HeapFree(::GetProcessHeap(), 0, pFreeBuffer))
 		{
 #ifdef _DEBUG
-			::OutputDebugString("  FreeBuffers error！");
+			::OutputDebugStringA("  FreeBuffers error！");
 #endif // _DEBUG
 			break;
 		}
@@ -303,7 +305,7 @@ void CIOCPUtility::FreeBuffers()
 	::LeaveCriticalSection(&m_FreeBufferListLock);
 }
 
-CIOCPUtility * CIOCPUtility::AllocateContext(SOCKET s)
+CIOCPContext* CIOCPUtility::AllocateContext(SOCKET s)
 {
 	CIOCPContext* pContext = NULL;
 	::EnterCriticalSection(&m_FreeContextListLock);
@@ -373,7 +375,7 @@ void CIOCPUtility::FreeContexts()
 		if(!::HeapFree(::GetProcessHeap(), 0, pFreeContext))
 		{
 #ifdef _DEBUG
-			::OutputDebugString("  FreeBuffers释放内存出错！");
+			::OutputDebugStringA("  FreeBuffers释放内存出错！");
 #endif // _DEBUG
 			break;
 		}
@@ -579,7 +581,7 @@ void CIOCPUtility::HandleIO(DWORD dwKey, CIOCPBuffer *pBuffer, DWORD dwTrans, in
 	CIOCPContext *pContext = (CIOCPContext *)dwKey;
 
 #ifdef _DEBUG
-	::OutputDebugString("	HandleIO... \n");
+	::OutputDebugStringA("	HandleIO... \n");
 #endif // _DEBUG
 
 	// 1）first decrease nOutstandingRecv
@@ -598,7 +600,7 @@ void CIOCPUtility::HandleIO(DWORD dwKey, CIOCPBuffer *pBuffer, DWORD dwTrans, in
 		if(pContext->bClosing) 
 		{
 #ifdef _DEBUG
-			::OutputDebugString("	检查到套节字已经被我们关闭 \n");
+			::OutputDebugStringA("	检查到套节字已经被我们关闭 \n");
 #endif // _DEBUG
 			if(pContext->nOutstandingRecv == 0 && pContext->nOutstandingSend == 0)
 			{		
@@ -626,7 +628,7 @@ void CIOCPUtility::HandleIO(DWORD dwKey, CIOCPBuffer *pBuffer, DWORD dwTrans, in
 				ReleaseContext(pContext);
 			}
 #ifdef _DEBUG
-			::OutputDebugString("	检查到客户套节字上发生错误 \n");
+			::OutputDebugStringA("	检查到客户套节字上发生错误 \n");
 #endif // _DEBUG
 		}
 		else 
@@ -638,7 +640,7 @@ void CIOCPUtility::HandleIO(DWORD dwKey, CIOCPBuffer *pBuffer, DWORD dwTrans, in
 				pBuffer->sClient = INVALID_SOCKET;
 			}
 #ifdef _DEBUG
-			::OutputDebugString("	检查到监听套节字上发生错误 \n");
+			::OutputDebugStringA("	检查到监听套节字上发生错误 \n");
 #endif // _DEBUG
 		}
 
@@ -653,7 +655,7 @@ void CIOCPUtility::HandleIO(DWORD dwKey, CIOCPBuffer *pBuffer, DWORD dwTrans, in
 		if(dwTrans == 0)
 		{
 #ifdef _DEBUG
-			::OutputDebugString("	监听套节字上客户端关闭 \n");
+			::OutputDebugStringA("	监听套节字上客户端关闭 \n");
 #endif // _DEBUG
 
 			if(pBuffer->sClient != INVALID_SOCKET)
@@ -920,7 +922,7 @@ DWORD WINAPI CIOCPUtility::_ListenThreadProc(LPVOID lpParam)
 DWORD WINAPI CIOCPUtility::_WorkerThreadProc(LPVOID lpParam)
 {
 #ifdef _DEBUG
-	::OutputDebugString("	WorkerThread 启动... \n");
+	::OutputDebugStringA("	WorkerThread start... \n");
 #endif // _DEBUG
 
 	CIOCPUtility *pThis = (CIOCPUtility*)lpParam;
@@ -931,14 +933,23 @@ DWORD WINAPI CIOCPUtility::_WorkerThreadProc(LPVOID lpParam)
 	LPOVERLAPPED lpol;
 	while(TRUE)
 	{
-		// wait all complte on the complete port
+		// wait all complete on the complete port
 		BOOL bOK = ::GetQueuedCompletionStatus(pThis->m_hCompletion, 
 			&dwTrans, (LPDWORD)&dwKey, (LPOVERLAPPED*)&lpol, WSA_INFINITE);
-
+		if (FALSE == bOK)
+		{
+			int error = GetLastError();
+			if (WAIT_TIMEOUT != error)
+			{
+				::OutputDebugStringA("	GetQueuedCompletionStatus error\n");
+				::exit(0);
+			}
+			continue;
+		}
 		if(dwTrans == -1) // exited notification announced by user
 		{
 #ifdef _DEBUG
-			::OutputDebugString("	WorkerThread 退出 \n");
+			::OutputDebugStringA("	WorkerThread exit \n");
 #endif // _DEBUG
 			::ExitThread(0);
 		}
@@ -968,21 +979,21 @@ DWORD WINAPI CIOCPUtility::_WorkerThreadProc(LPVOID lpParam)
 	}
 
 #ifdef _DEBUG
-	::OutputDebugString("	WorkerThread 退出 \n");
+	::OutputDebugStringA("	WorkerThread 退出 \n");
 #endif // _DEBUG
 	return 0;
 
 }
 
-virtual void CIOCPUtility::OnConnectionEstablished(CIOCPContext *pContext, CIOCPBuffer* pBuffer)
+void CIOCPUtility::OnConnectionEstablished(CIOCPContext *pContext, CIOCPBuffer* pBuffer)
 {}
-virtual void CIOCPUtility::OnConnectionClosing(CIOCPContext *pContext, CIOCPBuffer* pBuffer)
+void CIOCPUtility::OnConnectionClosing(CIOCPContext *pContext, CIOCPBuffer* pBuffer)
 {}
-virtual void CIOCPUtility::OnConnectionError(CIOCPContext *pContext, CIOCPBuffer* pBuffer)
+void CIOCPUtility::OnConnectionError(CIOCPContext *pContext, CIOCPBuffer* pBuffer, int nError)
 {}
-virtual void CIOCPUtility::OnReadCompleted(CIOCPContext *pContext, CIOCPBuffer* pBuffer)
+void CIOCPUtility::OnReadCompleted(CIOCPContext *pContext, CIOCPBuffer* pBuffer)
 {}
-virtual void CIOCPUtility::OnWriteCompleted(CIOCPContext *pContext, CIOCPBuffer* pBuffer)
+void CIOCPUtility::OnWriteCompleted(CIOCPContext *pContext, CIOCPBuffer* pBuffer)
 {}
 
 

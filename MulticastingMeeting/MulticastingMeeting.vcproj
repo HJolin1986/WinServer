@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="gb2312"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="WinSock"
-	ProjectGUID="{711314CE-4F9C-4FCD-9B30-756B49FF7057}"
-	RootNamespace="WinSock"
+	Name="MulticastingMeeting"
+	ProjectGUID="{EF0394A3-867B-493D-A891-F9C6D84D8E49}"
+	RootNamespace="MulticastingMeeting"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -171,11 +171,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\IOCPUtility.cpp"
+				RelativePath=".\Meeting.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SockInit.cpp"
+				RelativePath=".\MulticastingTalk.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\common\SockInit.cpp"
 				>
 			</File>
 			<File
@@ -198,10 +202,6 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath=".\WinSock.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -209,15 +209,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\Configure.h"
+				RelativePath=".\MulticastingTalk.h"
 				>
 			</File>
 			<File
-				RelativePath=".\IOCPUtility.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SockInit.h"
+				RelativePath="..\common\SockInit.h"
 				>
 			</File>
 			<File

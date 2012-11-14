@@ -1,7 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinSock", "WinSock\WinSock.vcproj", "{711314CE-4F9C-4FCD-9B30-756B49FF7057}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IOCPServer", "IOCPServer\IOCPServer.vcproj", "{711314CE-4F9C-4FCD-9B30-756B49FF7057}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IOCPClient", "IOCPClient\IOCPClient.vcproj", "{9F3CC6A6-C223-4453-AC79-BBD6B272AA1E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MulticastingMeeting", "MulticastingMeeting\MulticastingMeeting.vcproj", "{EF0394A3-867B-493D-A891-F9C6D84D8E49}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", "{65C0FF39-280F-4496-98D1-92584F4AA41B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +19,18 @@ Global
 		{711314CE-4F9C-4FCD-9B30-756B49FF7057}.Debug|Win32.Build.0 = Debug|Win32
 		{711314CE-4F9C-4FCD-9B30-756B49FF7057}.Release|Win32.ActiveCfg = Release|Win32
 		{711314CE-4F9C-4FCD-9B30-756B49FF7057}.Release|Win32.Build.0 = Release|Win32
+		{9F3CC6A6-C223-4453-AC79-BBD6B272AA1E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9F3CC6A6-C223-4453-AC79-BBD6B272AA1E}.Debug|Win32.Build.0 = Debug|Win32
+		{9F3CC6A6-C223-4453-AC79-BBD6B272AA1E}.Release|Win32.ActiveCfg = Release|Win32
+		{9F3CC6A6-C223-4453-AC79-BBD6B272AA1E}.Release|Win32.Build.0 = Release|Win32
+		{EF0394A3-867B-493D-A891-F9C6D84D8E49}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EF0394A3-867B-493D-A891-F9C6D84D8E49}.Debug|Win32.Build.0 = Debug|Win32
+		{EF0394A3-867B-493D-A891-F9C6D84D8E49}.Release|Win32.ActiveCfg = Release|Win32
+		{EF0394A3-867B-493D-A891-F9C6D84D8E49}.Release|Win32.Build.0 = Release|Win32
+		{65C0FF39-280F-4496-98D1-92584F4AA41B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{65C0FF39-280F-4496-98D1-92584F4AA41B}.Debug|Win32.Build.0 = Debug|Win32
+		{65C0FF39-280F-4496-98D1-92584F4AA41B}.Release|Win32.ActiveCfg = Release|Win32
+		{65C0FF39-280F-4496-98D1-92584F4AA41B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

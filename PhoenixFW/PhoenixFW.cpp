@@ -1,190 +1,154 @@
-// PhoenixFW.cpp : Defines the entry point for the application.
-//
+
+/**************************************************************************
+	created:	2012/11/18	13:37
+	filename: 	PhoenixFW.CPP
+	file path:	f:\GitHub\WinSock\PhoenixFW
+	author:		Dailiming, en_name: Dicky
+
+	purpose:		
+**************************************************************************/
 
 #include "stdafx.h"
 #include "PhoenixFW.h"
+#include "PhoenixFWDlg.h"
 
-#define MAX_LOADSTRING 100
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
-// Global Variables:
-HINSTANCE hInst;								// current instance
-TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
-TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
+/////////////////////////////////////////////////////////////////////////////
+// CPhoenixApp
 
-// Forward declarations of functions included in this code module:
-ATOM				MyRegisterClass(HINSTANCE hInstance);
-BOOL				InitInstance(HINSTANCE, int);
-LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
+BEGIN_MESSAGE_MAP(CPhoenixApp, CWinApp)
+	//{{AFX_MSG_MAP(CPhoenixApp)
+	// NOTE - the ClassWizard will add and remove mapping macros here.
+	//    DO NOT EDIT what you see in these blocks of generated code!
+	//}}AFX_MSG
+	ON_COMMAND(ID_HELP, CWinApp::OnHelp)
+END_MESSAGE_MAP()
 
-int APIENTRY _tWinMain(HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPTSTR    lpCmdLine,
-                     int       nCmdShow)
+/////////////////////////////////////////////////////////////////////////////
+// CPhoenixApp construction
+
+CPhoenixApp::CPhoenixApp()
 {
-	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
+	// TODO: add construction code here,
+	// Place all significant initialization in InitInstance
+}
 
- 	// TODO: Place code here.
-	MSG msg;
-	HACCEL hAccelTable;
+CPhoenixApp theApp;
 
-	// Initialize global strings
-	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-	LoadString(hInstance, IDC_PHOENIXFW, szWindowClass, MAX_LOADSTRING);
-	MyRegisterClass(hInstance);
+CPRuleFile g_RuleFile;				// manage rule file
+CPIOControl *g_pIoControl = NULL;	// manage chared DLLs
 
-	// Perform application initialization:
-	if (!InitInstance (hInstance, nCmdShow))
+BOOL CPhoenixApp::InitInstance()
+{
+	//--------------------------------------------------
+	// only run one instance
+	TCHAR szModule[] = L"PhoenixFW";
+	m_hSemaphore = ::CreateSemaphore(NULL, 0, 1, szModule);
+	if(::GetLastError() == ERROR_ALREADY_EXISTS)
 	{
+		AfxMessageBox(L" 已经有一个实例在运行！");
 		return FALSE;
 	}
 
-	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PHOENIXFW));
-
-	// Main message loop:
-	while (GetMessage(&msg, NULL, 0, 0))
+	if(!g_RuleFile.LoadRules())						// load filter rule files
 	{
-		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+		AfxMessageBox(L" 加载配置文件出错！");
+		return FALSE;
 	}
 
-	return (int) msg.wParam;
-}
+	g_pIoControl = new CPIOControl;					// create DLL IO object to load DLL
+	ApplyFileData();								// set filter rules
 
+	AfxEnableControlContainer();
 
+	// Standard initialization
+	// If you are not using these features and wish to reduce the size
+	//  of your final executable, you should remove from the following
+	//  the specific initialization routines you do not need.
 
-//
-//  FUNCTION: MyRegisterClass()
-//
-//  PURPOSE: Registers the window class.
-//
-//  COMMENTS:
-//
-//    This function and its usage are only necessary if you want this code
-//    to be compatible with Win32 systems prior to the 'RegisterClassEx'
-//    function that was added to Windows 95. It is important to call this function
-//    so that the application will get 'well formed' small icons associated
-//    with it.
-//
-ATOM MyRegisterClass(HINSTANCE hInstance)
-{
-	WNDCLASSEX wcex;
+#ifdef _AFXDLL
+	Enable3dControls();			// Call this when using MFC in a shared DLL
+#else
+	Enable3dControlsStatic();	// Call this when linking to MFC statically
+#endif
 
-	wcex.cbSize = sizeof(WNDCLASSEX);
-
-	wcex.style			= CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc	= WndProc;
-	wcex.cbClsExtra		= 0;
-	wcex.cbWndExtra		= 0;
-	wcex.hInstance		= hInstance;
-	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PHOENIXFW));
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName	= MAKEINTRESOURCE(IDC_PHOENIXFW);
-	wcex.lpszClassName	= szWindowClass;
-	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-	return RegisterClassEx(&wcex);
-}
-
-//
-//   FUNCTION: InitInstance(HINSTANCE, int)
-//
-//   PURPOSE: Saves instance handle and creates main window
-//
-//   COMMENTS:
-//
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
-//
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
-{
-   HWND hWnd;
-
-   hInst = hInstance; // Store instance handle in our global variable
-
-   hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
-
-   if (!hWnd)
-   {
-      return FALSE;
-   }
-
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
-
-   return TRUE;
-}
-
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE:  Processes messages for the main window.
-//
-//  WM_COMMAND	- process the application menu
-//  WM_PAINT	- Paint the main window
-//  WM_DESTROY	- post a quit message and return
-//
-//
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	int wmId, wmEvent;
-	PAINTSTRUCT ps;
-	HDC hdc;
-
-	switch (message)
+	CMainDlg dlg;
+	m_pMainWnd = &dlg;
+	int nResponse = dlg.DoModal();
+	if (nResponse == IDOK)
 	{
-	case WM_COMMAND:
-		wmId    = LOWORD(wParam);
-		wmEvent = HIWORD(wParam);
-		// Parse the menu selections:
-		switch (wmId)
-		{
-		case IDM_ABOUT:
-			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-			break;
-		case IDM_EXIT:
-			DestroyWindow(hWnd);
-			break;
-		default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
-		}
-		break;
-	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
-		// TODO: Add any drawing code here...
-		EndPaint(hWnd, &ps);
-		break;
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
-	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
+		// TODO: Place code here to handle when the dialog is
+		//  dismissed with OK
 	}
-	return 0;
+	else if (nResponse == IDCANCEL)
+	{
+		// TODO: Place code here to handle when the dialog is
+		//  dismissed with Cancel
+	}
+	return FALSE;
 }
 
-// Message handler for about box.
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	UNREFERENCED_PARAMETER(lParam);
-	switch (message)
+int CPhoenixApp::ExitInstance() 
+{	
+	if(g_pIoControl != NULL)
 	{
-	case WM_INITDIALOG:
-		return (INT_PTR)TRUE;
-
-	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		break;
+		g_pIoControl->SetWorkMode(PF_PASS_ALL);
+		g_pIoControl->SetPhoenixInstance(NULL, L"");
+		delete g_pIoControl;
 	}
-	return (INT_PTR)FALSE;
+	IMClearRules();
+	::CloseHandle(m_hSemaphore);
+	return CWinApp::ExitInstance();
+}
+
+BOOL CPhoenixApp::SetAutoStart(BOOL bStart)
+{
+	// root key, subkey name, disposition key
+	HKEY hRoot = HKEY_LOCAL_MACHINE;
+	TCHAR *szSubKey = L"Software\\Microsoft\\Windows\\CurrentVersion\\Run";
+	HKEY hKey;
+
+	DWORD dwDisposition = REG_OPENED_EXISTING_KEY;	// if not exit, don't create
+	LONG lRet = ::RegCreateKeyEx(hRoot, szSubKey, 0, NULL, 
+		REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, &dwDisposition);
+	if(lRet != ERROR_SUCCESS)
+		return FALSE;
+
+	if(bStart)
+	{
+		char szModule[MAX_PATH] ;
+		::GetModuleFileNameA(NULL, szModule, MAX_PATH);		// get current file name
+		// create a new key, set its value as file name
+		lRet = ::RegSetValueExA(hKey, "PhoenixFW", 0, REG_SZ, (BYTE*)szModule, strlen(szModule));
+	}
+	else
+	{
+		lRet = ::RegDeleteValueA(hKey, "PhoenixFW");
+	}
+
+	::RegCloseKey(hKey);								// close subkey hand
+	return lRet == ERROR_SUCCESS;
+}
+
+BOOL CPhoenixApp::ApplyFileData()
+{
+
+	g_pIoControl->SetWorkMode(g_RuleFile.m_header.ucLspWorkMode);	// set work mode
+	g_pIoControl->SetRuleFile(&g_RuleFile.m_header, g_RuleFile.m_pLspRules); // set app rule
+
+	IMClearRules();			// set kernel layer rules
+	if(g_RuleFile.m_header.ucKerWorkMode == IM_START_FILTER)
+	{
+		if(!IMSetRules(g_RuleFile.m_pKerRules, g_RuleFile.m_header.ulKerRuleCount))
+		{
+			AfxMessageBox(L" 设置核心层规则出错！\n");
+			return FALSE;
+		}
+	}
+	return TRUE;
 }

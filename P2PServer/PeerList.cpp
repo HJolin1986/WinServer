@@ -35,7 +35,7 @@ PEER_INFO *CPeerList::GetAPeer(PCHAR pszUserName)
 {
 	for (int i = 0; i < m_nCurrentSize ; i++)
 	{
-		if (stricmp(m_pPeer[i].szUserName, pszUserName) == 0)
+		if (_stricmp(m_pPeer[i].szUserName, pszUserName) == 0)
 		{
 			return &m_pPeer[i];
 		}
@@ -47,7 +47,7 @@ void CPeerList::DeleteAPeer(PCHAR pszUserName)
 {
 	for (int i = 0; i < m_nCurrentSize ; i++)
 	{
-		if (stricmp(m_pPeer[i].szUserName, pszUserName) == 0)
+		if (_stricmp(m_pPeer[i].szUserName, pszUserName) == 0)
 		{
 			memcpy(&m_pPeer[i],&m_pPeer[i+1], sizeof(PEER_INFO)*(m_nCurrentSize-i-1));
 			 m_nCurrentSize--;

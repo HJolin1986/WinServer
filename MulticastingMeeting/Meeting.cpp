@@ -41,14 +41,15 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int)
 
 void HandleGroupMsg(HWND hDlg, GT_HDR *pHeader)
 {
+	USES_CONVERSION;
 	switch(pHeader->gt_type)
 	{
 	case MT_JION:		
 		{
 			// display join msg to user
 			char szText[56];
-			sprintf((szText), (" 用户：《%s》加入！"), pHeader->szUser);
-			::SetWindowText(::GetDlgItem(hDlg, IDC_SYSMSG), (szText));
+			sprintf_s((szText), sizeof(szText), (" 用户：《%s》加入！"), pHeader->szUser);
+			::SetWindowText(::GetDlgItem(hDlg, IDC_SYSMSG), A2W(szText));
 
 			// add user to list
 			int nCurSel = ::SendDlgItemMessage(hDlg, IDC_USERS, CB_GETCURSEL, 0, 0);
@@ -64,8 +65,8 @@ void HandleGroupMsg(HWND hDlg, GT_HDR *pHeader)
 		{
 			// display leave msg to user
 			char szText[56];
-			sprintf((szText), (" 用户：《%s》离开！"), pHeader->szUser);
-			::SetWindowText(::GetDlgItem(hDlg, IDC_SYSMSG), (szText));
+			sprintf_s((szText),sizeof(szText), (" 用户：《%s》离开！"), pHeader->szUser);
+			::SetWindowText(::GetDlgItem(hDlg, IDC_SYSMSG), A2W(szText));
 
 			int nCount = ::SendDlgItemMessage(hDlg, IDC_USERS, CB_GETCOUNT, 0, 0);
 			for(int i=0; i<nCount; i++)
@@ -85,8 +86,8 @@ void HandleGroupMsg(HWND hDlg, GT_HDR *pHeader)
 			char *psz = pHeader->data();
 			psz[pHeader->nDataLength] = '\0';
 			char szText[1024];
-			sprintf((szText), ("【%s 说】"), pHeader->szUser);
-			strncat(szText, psz, 1024 - strlen(szText));
+			sprintf_s((szText), sizeof(szText), ("【%s 说】"), pHeader->szUser);
+			strncat_s(szText, psz, 1024 - strlen(szText));
 			::SendDlgItemMessage(hDlg, IDC_RECORD, LB_INSERTSTRING, 0, (long)szText);
 		}
 		break;
@@ -111,7 +112,7 @@ BOOL __stdcall DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			// handle msg from MulticastingTalk
 			if(wParam != 0) 
-				::MessageBox(hDlg, (LPCTSTR)lParam, ("出错！"), 0);
+				::MessageBox(hDlg, (LPCTSTR)lParam, _T("出错！"), 0);
 			else
 				HandleGroupMsg(hDlg, (GT_HDR*)lParam);
 		}
@@ -124,7 +125,7 @@ BOOL __stdcall DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				// get send data
 				char szText[1024];
-				int nLen = ::GetWindowText(::GetDlgItem(hDlg, IDC_SENDMSG), (szText), 1024);
+				int nLen = ::GetWindowText(::GetDlgItem(hDlg, IDC_SENDMSG), A2W(szText), 1024);
 				if(nLen == 0)
 					break;
 
@@ -140,7 +141,7 @@ BOOL __stdcall DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					int nIndex = ::SendDlgItemMessage(hDlg, IDC_USERS, CB_GETCURSEL, 0, 0);
 					if(nIndex == -1)
 					{
-						::MessageBox(hDlg, A2CW("请选择一个用户！"), A2CW("GroupTalk"), 0);
+						::MessageBox(hDlg, _T("请选择一个用户！"), _T("GroupTalk"), 0);
 						break;
 					}
 					// get user ip addr
@@ -148,7 +149,7 @@ BOOL __stdcall DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				}
 				//send data
 				if(g_pTalk->SendText(szText, nLen, dwAddr) == nLen)
-					::SetWindowText(::GetDlgItem(hDlg, IDC_SENDMSG), A2CW(""));
+					::SetWindowText(::GetDlgItem(hDlg, IDC_SENDMSG), _T(""));
 			}
 			break;
 

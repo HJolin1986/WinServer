@@ -52,6 +52,7 @@
 #define RULE_HEADER_WEB_URL			_T("http://www.yanping.net/\0")
 #define RULE_HEADER_EMAIL			_T("whitegest@sohu.com\0")
 
+#define DLLPATH _T("F:/GitHub/WinSock/Release/PhoenixLSP.dll")
 #define PHOENIX_SERVICE_DLL_NAME	_T("PhoenixLSP.dll")
 #define RULE_FILE_NAME				_T("prule.fnk")
 #define RULE_HEADER_SIGNATURE		_T("PHOENIX/INC\0")

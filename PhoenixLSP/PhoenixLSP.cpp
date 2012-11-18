@@ -5,6 +5,8 @@
 
 #include <WinSock2.h>
 #include <WS2spi.h>
+#include <Windows.h>
+#include <WinBase.h>
 #include <SpOrder.h>
 #include <stdio.h>
 #include <tchar.h>
@@ -15,12 +17,12 @@
 #include "../common/PMacRes.h"
 #include "Acl.h"
 
-#pragma comment(lib, "WS2_32")
+#pragma comment(lib, "WS2_32.lib")
 
-CAcl g_Acl;						// access list, check privilege
-WSPUPCALLTABLE	g_pUpCallTable;	// up layer func list, it is called if LSP create its pseudo handle
-WSPPROC_TABLE g_NextProcTable;	// sublyer
-TCHAR g_szCurrentApp[MAX_PATH];	// who call this DLL currently
+CAcl			g_Acl;						// access list, check privilege
+WSPUPCALLTABLE	g_pUpCallTable;				// up layer func list, it is called if LSP create its pseudo handle
+WSPPROC_TABLE	g_NextProcTable;			// sublayer
+TCHAR			g_szCurrentApp[MAX_PATH];	// who call this DLL currently
 
 
 BOOL APIENTRY DllMain( HMODULE hModule,
@@ -80,7 +82,7 @@ int WSPAPI WSPStartup(
 	int nError;
 	TCHAR szBaseProviderDll[MAX_PATH];
 	int nLen = MAX_PATH;
-	if (SOCKET_ERROR == ::WSCGetProviderPath(&NextProtocolInfo.ProviderId,szBaseProviderDll,&NULL,&nError))
+	if (SOCKET_ERROR == ::WSCGetProviderPath(&NextProtocolInfo.ProviderId,szBaseProviderDll,NULL,&nError))
 	{
 		ODS1(L" WSPStartup: WSCGetProviderPath() failed %d \n", nError);
 		return WSAEPROVIDERFAILEDINIT;
@@ -96,13 +98,11 @@ int WSPAPI WSPStartup(
 		ODS1(L" WSPStartup:  LoadLibrary() failed %d \n", ::GetLastError());
 		return WSAEPROVIDERFAILEDINIT;
 	}
-	LPWSPSTARTUP pfnWSPStartup = NULL;
-	pfnWSPStartup = (LPWSPSTARTUP()::GetProcAdddress(hModule,"WSPStartup"));
 
 	//--------------------------------------------------
 	// get WSPStartup of sublayer app
-	LPWSPSTARTUP pfnWSPStartup = NULL;szBaseProviderDll;
-	pfnWSPStartup = (LPWSPSTARTUP())::GetProcAddress(hModule, "WSPStartup");
+	LPWSPSTARTUP pfnWSPStartup = NULL;
+	pfnWSPStartup = (LPWSPSTARTUP)::GetProcAddress(hModule, "WSPStartup");
 	if (NULL == pfnWSPStartup)
 	{
 		ODS1(L" WSPStartup:  GetProcAddress() failed %d \n", ::GetLastError());
@@ -115,7 +115,7 @@ int WSPAPI WSPStartup(
 	{
 		pInfo = &NextProtocolInfo;
 	}
-	int nRet = pfnWSPStartup(wVersionRequested, lpWSPData, pInfo, UpcallTable);
+	int nRet = pfnWSPStartup(wVersionRequested, lpWSPData, pInfo, UpcallTable,lpProcTable);
 	if(ERROR_SUCCESS != nRet)
 	{
 		ODS1(L" WSPStartup:  underlying provider's WSPStartup() failed %d \n", nRet);
@@ -174,7 +174,7 @@ int WSPAPI WSPCloseSocket(
 
 int WSPAPI WSPBind(SOCKET s, const struct sockaddr* name, int namelen, LPINT lpErrno)
 {
-	g_Acl.CheckBind(s, name);							// set new session
+	g_Acl.CheckBind(s, (const PSOCKADDR)name);							// set new session
 	return g_NextProcTable.lpWSPBind(s, name, namelen, lpErrno);
 }
 
@@ -203,19 +203,18 @@ int WSPAPI WSPConnect(
 
 SOCKET WSPAPI WSPAccept(
 						SOCKET			s,
-struct sockaddr FAR *addr,
-	LPINT			addrlen,
-	LPCONDITIONPROC	lpfnCondition,
-	DWORD			dwCallbackData,
-	LPINT			lpErrno
-	)
+						struct sockaddr FAR *addr,
+						LPINT			addrlen,
+						LPCONDITIONPROC	lpfnCondition,
+						DWORD			dwCallbackData,
+						LPINT			lpErrno
+						)
 {
 	ODS1(L"  PhoenixLSP:  WSPAccept  %s \n", g_szCurrentApp);
-
-	// 首先调用下层函数接收到来的连接
+	// call sublayter to accept new connection
 	SOCKET	sNew	= g_NextProcTable.lpWSPAccept(s, addr, addrlen, lpfnCondition, dwCallbackData, lpErrno);
 
-	// 检查是否允许，如果不允许，关闭新接收的连接
+	// check whether the other side allow to connect
 	if (sNew != INVALID_SOCKET && g_Acl.CheckAccept(s, sNew, addr) != PF_PASS)
 	{
 		int iError;
@@ -226,7 +225,8 @@ struct sockaddr FAR *addr,
 
 	return sNew;
 }
-nt WSPAPI WSPSendTo(
+
+int WSPAPI WSPSendTo(
 					SOCKET			s,
 					LPWSABUF		lpBuffers,
 					DWORD			dwBufferCount,
@@ -242,7 +242,7 @@ nt WSPAPI WSPSendTo(
 {
 	ODS1(L" query send to... %s \n", g_szCurrentApp);
 
-	// 检查是否允许发送数据
+	// check whether allow to send data
 	if (g_Acl.CheckSendTo(s, lpTo) != PF_PASS)
 	{
 		int		iError;
@@ -254,7 +254,7 @@ nt WSPAPI WSPSendTo(
 		return SOCKET_ERROR;
 	}
 
-	// 调用下层发送函数
+	// send data
 	return g_NextProcTable.lpWSPSendTo(s, lpBuffers, dwBufferCount, 
 		lpNumberOfBytesSent, dwFlags, lpTo, iTolen, 
 		lpOverlapped, lpCompletionRoutine, lpThreadId, lpErrno);
@@ -266,18 +266,17 @@ int WSPAPI WSPRecvFrom (
 						DWORD			dwBufferCount,
 						LPDWORD			lpNumberOfBytesRecvd,
 						LPDWORD			lpFlags,
-struct sockaddr FAR * lpFrom,
-	LPINT			lpFromlen,
-	LPWSAOVERLAPPED lpOverlapped,
-	LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine,
-	LPWSATHREADID	lpThreadId,
-	LPINT			lpErrno
-	)
+						struct sockaddr FAR * lpFrom,
+						LPINT			lpFromlen,
+						LPWSAOVERLAPPED lpOverlapped,
+						LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine,
+						LPWSATHREADID	lpThreadId,
+						LPINT			lpErrno
+						)
 {
 	ODS1(L"  PhoenixLSP:  WSPRecvFrom %s \n", g_szCurrentApp);
 
-	// 首先检查是否允许接收数据
-	if(g_Acl.CheckRecvFrom(s, lpFrom) != PF_PASS)
+	if(g_Acl.CheckRecvFrom(s, lpFrom) != PF_PASS)				// check whether allow recv
 	{
 		int		iError;
 		g_NextProcTable.lpWSPShutdown(s, SD_BOTH, &iError);
@@ -287,7 +286,7 @@ struct sockaddr FAR * lpFrom,
 		return SOCKET_ERROR;
 	}
 
-	// 调用下层接收函数
+	// receive data
 	return g_NextProcTable.lpWSPRecvFrom(s, lpBuffers, dwBufferCount, lpNumberOfBytesRecvd, 
 		lpFlags, lpFrom, lpFromlen, lpOverlapped, lpCompletionRoutine, lpThreadId, lpErrno);
 }
@@ -300,7 +299,7 @@ LPWSAPROTOCOL_INFOW GetProvider(LPINT lpnTotalProtocols)
 	int nError;
 	LPWSAPROTOCOL_INFOW pProtoInfo = NULL;
 
-	// 取得需要的长度
+	// get needful length
 	if(::WSCEnumProtocols(NULL, pProtoInfo, &dwSize, &nError) == SOCKET_ERROR)
 	{
 		if(nError != WSAENOBUFS)

@@ -1,4 +1,4 @@
-#pragma 
+#pragma once
 
 /**************************************************************************
 	created:	2012/11/16	14:37	
@@ -9,8 +9,8 @@
 	purpose:	
 **************************************************************************/
 
-#include "../common/PMacRes.h"
-#include "../common/iocommon.h"
+#include "PMacRes.h"
+#include "iocommon.h"
 
 typedef struct						// user layer filter rule
 {
@@ -20,7 +20,7 @@ typedef struct						// user layer filter rule
 	UCHAR ucServiceType;			// service type
 	USHORT usServicePort;			
 	TCHAR sDemo[51];				// description
-}RULE_ITEM, *PRULE_ITEM;
+}RULE_ITEM,  *PRULE_ITEM;
 
 
 typedef struct						// file header

@@ -32,11 +32,11 @@ typedef struct _PEER_INFO					// one peer info
 	DWORD		dwLastActiveTime;			// record the user active time(server use)
 }PEER_INFO, *PPEER_INFO;
 
-typedef struct CP2PMessage
+typedef struct 
 {
 	int			nMessageType;		// msg type
 	PEER_INFO	peer;				// peer info
-};
+}CP2PMessage, * PCP2PMessage;
 
 //-------------------------------------------
 // msg type def

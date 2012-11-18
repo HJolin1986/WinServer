@@ -1,6 +1,5 @@
 LIBRARY	"PhoenixLSP"
 
-DESCRIPTION		" Implements a layered service provider for TCP/IP"
 
 SECTIONS	
 				.initdata	READ WRITE SHARED

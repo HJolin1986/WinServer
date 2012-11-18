@@ -5,9 +5,17 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IOCPServer", "IOCPServer\IO
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IOCPClient", "IOCPClient\IOCPClient.vcproj", "{9F3CC6A6-C223-4453-AC79-BBD6B272AA1E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MulticastingMeeting", "MulticastingMeeting\MulticastingMeeting.vcproj", "{EF0394A3-867B-493D-A891-F9C6D84D8E49}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", "{65C0FF39-280F-4496-98D1-92584F4AA41B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MulticastingMeeting", "MulticastingMeeting\MulticastingMeeting.vcproj", "{4278EB02-C7B1-4C10-8D14-84AAB9C6658C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "P2PServer", "P2PServer\P2PServer.vcproj", "{04CE423D-ABC1-49F1-8A71-3CE7CD1A2472}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "P2PClient", "P2PClient\P2PClient.vcproj", "{CD43395A-6594-455B-B44D-5218823FA15B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhoenixFW", "PhoenixFW\PhoenixFW.vcproj", "{2D410F06-9F9A-4D26-B358-41F149BC442E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhoenixLSP", "PhoenixLSP\PhoenixLSP.vcproj", "{027870A0-CDB9-4516-B165-2D29F90E50A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +31,30 @@ Global
 		{9F3CC6A6-C223-4453-AC79-BBD6B272AA1E}.Debug|Win32.Build.0 = Debug|Win32
 		{9F3CC6A6-C223-4453-AC79-BBD6B272AA1E}.Release|Win32.ActiveCfg = Release|Win32
 		{9F3CC6A6-C223-4453-AC79-BBD6B272AA1E}.Release|Win32.Build.0 = Release|Win32
-		{EF0394A3-867B-493D-A891-F9C6D84D8E49}.Debug|Win32.ActiveCfg = Debug|Win32
-		{EF0394A3-867B-493D-A891-F9C6D84D8E49}.Debug|Win32.Build.0 = Debug|Win32
-		{EF0394A3-867B-493D-A891-F9C6D84D8E49}.Release|Win32.ActiveCfg = Release|Win32
-		{EF0394A3-867B-493D-A891-F9C6D84D8E49}.Release|Win32.Build.0 = Release|Win32
 		{65C0FF39-280F-4496-98D1-92584F4AA41B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{65C0FF39-280F-4496-98D1-92584F4AA41B}.Debug|Win32.Build.0 = Debug|Win32
 		{65C0FF39-280F-4496-98D1-92584F4AA41B}.Release|Win32.ActiveCfg = Release|Win32
 		{65C0FF39-280F-4496-98D1-92584F4AA41B}.Release|Win32.Build.0 = Release|Win32
+		{4278EB02-C7B1-4C10-8D14-84AAB9C6658C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4278EB02-C7B1-4C10-8D14-84AAB9C6658C}.Debug|Win32.Build.0 = Debug|Win32
+		{4278EB02-C7B1-4C10-8D14-84AAB9C6658C}.Release|Win32.ActiveCfg = Release|Win32
+		{4278EB02-C7B1-4C10-8D14-84AAB9C6658C}.Release|Win32.Build.0 = Release|Win32
+		{04CE423D-ABC1-49F1-8A71-3CE7CD1A2472}.Debug|Win32.ActiveCfg = Debug|Win32
+		{04CE423D-ABC1-49F1-8A71-3CE7CD1A2472}.Debug|Win32.Build.0 = Debug|Win32
+		{04CE423D-ABC1-49F1-8A71-3CE7CD1A2472}.Release|Win32.ActiveCfg = Release|Win32
+		{04CE423D-ABC1-49F1-8A71-3CE7CD1A2472}.Release|Win32.Build.0 = Release|Win32
+		{CD43395A-6594-455B-B44D-5218823FA15B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CD43395A-6594-455B-B44D-5218823FA15B}.Debug|Win32.Build.0 = Debug|Win32
+		{CD43395A-6594-455B-B44D-5218823FA15B}.Release|Win32.ActiveCfg = Release|Win32
+		{CD43395A-6594-455B-B44D-5218823FA15B}.Release|Win32.Build.0 = Release|Win32
+		{2D410F06-9F9A-4D26-B358-41F149BC442E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2D410F06-9F9A-4D26-B358-41F149BC442E}.Debug|Win32.Build.0 = Debug|Win32
+		{2D410F06-9F9A-4D26-B358-41F149BC442E}.Release|Win32.ActiveCfg = Release|Win32
+		{2D410F06-9F9A-4D26-B358-41F149BC442E}.Release|Win32.Build.0 = Release|Win32
+		{027870A0-CDB9-4516-B165-2D29F90E50A1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{027870A0-CDB9-4516-B165-2D29F90E50A1}.Debug|Win32.Build.0 = Debug|Win32
+		{027870A0-CDB9-4516-B165-2D29F90E50A1}.Release|Win32.ActiveCfg = Release|Win32
+		{027870A0-CDB9-4516-B165-2D29F90E50A1}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,7 +9,7 @@
 **************************************************************************/
 
 #include "StdAfx.h"
-#include "../common/SockInit.h"
+#include "SockInit.h"
 
 #pragma comment(lib,"WS2_32")
 
@@ -35,4 +35,22 @@ inline void Socket_NetData::InitSockAddr(sockaddr_in &addr, int port, const stri
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
 	addr.sin_addr.S_un.S_addr = inet_addr(name->h_addr_list[0]);
+}
+
+USHORT Socket_NetData::CheckSum(USHORT*buf, int size)
+{
+	ULONG cksum = 0;
+	while (size>1)
+	{
+		cksum += *buf++;
+		size -= sizeof(USHORT);
+	}
+	if (size)
+	{
+		cksum += *(UCHAR*)buf;
+	}
+	// !(highe 16 + low 16)
+	cksum = (cksum >> 16) + (cksum&0xFFFF);
+	cksum += (cksum>>16);
+	return (USHORT)(~cksum);
 }

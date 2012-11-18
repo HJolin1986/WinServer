@@ -14,8 +14,7 @@
 #include <Windows.h>
 #include <WS2tcpip.h>			//IP_MULTICAST_TTL, IP_MULTICAST_IF are defined in the file
 
-
-
+#pragma comment(lib,"WS2_32")
 //--------------------------------------------------
 // work thread function
 DWORD WINAPI _GroupTalkEntry(LPVOID lpParam)
@@ -26,21 +25,21 @@ DWORD WINAPI _GroupTalkEntry(LPVOID lpParam)
 	pTalk->m_sRead = ::WSASocket(AF_INET, SOCK_DGRAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 
 	BOOL bReuse = TRUE;
-	::setsockopt(pTalk->m_sRead, SOL_SOCKET, SO_REUSEADDR, (char*)&bReuse, sizeof(BOOL));
+	::setsockopt(pTalk->m_sRead, SOL_SOCKET, SO_REUSEADDR, (PCHAR)&bReuse, sizeof(BOOL));
 
 	// set multicast TTL
 	::setsockopt(pTalk->m_sSend, 
-		IPPROTO_IP, IP_MULTICAST_TTL, (char*)&pTalk->m_nTTL, sizeof(pTalk->m_nTTL));
+		IPPROTO_IP, IP_MULTICAST_TTL, (PCHAR)&pTalk->m_nTTL, sizeof(pTalk->m_nTTL));
 
 	// set net interface that's send data
 	setsockopt(pTalk->m_sSend, 
-		IPPROTO_IP, IP_MULTICAST_IF, (char*)&pTalk->m_dwLocalAddr, sizeof(pTalk->m_dwLocalAddr));
+		IPPROTO_IP, IP_MULTICAST_IF, (PCHAR)&pTalk->m_dwLocalAddr, sizeof(pTalk->m_dwLocalAddr));
 
 	sockaddr_in si;
 	si.sin_family = AF_INET;
 	si.sin_port = ::ntohs(GROUP_PORT);
 	si.sin_addr.S_un.S_addr = pTalk->m_dwLocalAddr;
-	int nRet = ::bind(pTalk->m_sRead, (sockaddr*)&si, sizeof(si));
+	int nRet = ::bind(pTalk->m_sRead, (PSOCKADDR)&si, sizeof(si));
 	if(nRet == SOCKET_ERROR)
 	{		
 		::closesocket(pTalk->m_sSend);
@@ -72,7 +71,7 @@ DWORD WINAPI _GroupTalkEntry(LPVOID lpParam)
 		sockaddr_in saFrom;
 		int nFromLen = sizeof(saFrom);
 		int ret = ::WSARecvFrom(pTalk->m_sRead, 
-			&buf, 1, &dwRecv, &dwFlags, (sockaddr*)&saFrom, &nFromLen, &ol, NULL);
+			&buf, 1, &dwRecv, &dwFlags, (PSOCKADDR)&saFrom, &nFromLen, &ol, NULL);
 		if(ret == SOCKET_ERROR)
 		{
 			if(::WSAGetLastError() != WSA_IO_PENDING)
@@ -144,7 +143,7 @@ BOOL MulticastingTalk::JoinGroup()
 	int nRet = ::setsockopt(m_sRead, 
 		IPPROTO_IP, 
 		IP_ADD_MEMBERSHIP, 
-		(char*)&mcast, 
+		(PCHAR)&mcast, 
 		sizeof(mcast));
 
 	//--------------------------------------------------
@@ -154,7 +153,7 @@ BOOL MulticastingTalk::JoinGroup()
 		char buf[sizeof(GT_HDR)] = {0};
 		GT_HDR* pHeader = (GT_HDR*) buf;
 		pHeader->gt_type = MT_JION;
-		::strncpy(pHeader->szUser, m_szUser,15);
+		::strncpy_s(pHeader->szUser, m_szUser,15);
 		Send(buf,sizeof(GT_HDR),m_dwMultiAddr);
 		return TRUE;
 	}
@@ -163,19 +162,19 @@ BOOL MulticastingTalk::JoinGroup()
 BOOL MulticastingTalk::LeaveGroup()
 {
 	ip_mreq mcast;
-	mcast.imr_multiaddr = m_dwMultiAddr;
-	mcast.imr_interface = INADDR_ANY;
+	mcast.imr_multiaddr.S_un.S_addr = m_dwMultiAddr;
+	mcast.imr_interface.S_un.S_addr = INADDR_ANY;
 	int nRet = ::setsockopt(m_sRead,
 		IPPROTO_IP, 
 		IP_DROP_MEMBERSHIP,
-		(char*)&mcast,
+		(PCHAR)&mcast,
 		sizeof(mcast));
 	if (nRet != SOCKET_ERROR)
 	{
 		char buf[sizeof(GT_HDR)] = {0};
 		GT_HDR *pHeader = (GT_HDR*)buf;
 		pHeader->gt_type = MT_LEAVE;
-		strncpy(pHeader->szUser,m_szUser,15);
+		strncpy_s(pHeader->szUser,m_szUser,15);
 		Send(buf,sizeof(GT_HDR), m_dwMultiAddr);
 		return TRUE;
 	}
@@ -184,20 +183,20 @@ BOOL MulticastingTalk::LeaveGroup()
 BOOL MulticastingTalk::Send(char *szText, int nLen, DWORD dwRomoteAddr)
 {
 	sockaddr_in dest;
-	dest.sin_addr.S_addr = dwRomoteAddr;
+	dest.sin_addr.S_un.S_addr = dwRomoteAddr;
 	dest.sin_family = AF_INET;
 	dest.sin_port = ::ntohs(GROUP_PORT);
-	return ::sendto(m_sRead,szText,nLen,0,(sockaddr*)&dest,sizeof(dest));
+	return ::sendto(m_sRead,szText,nLen,0,(PSOCKADDR)&dest,sizeof(dest));
 }
 
-BOOL MulticastingTalk::SendText (char *szText, int nLen, DWORD dwRemoteAddr = 0)
+BOOL MulticastingTalk::SendText (char *szText, int nLen, DWORD dwRemoteAddr)
 {
 	char buf[sizeof(GT_HDR)+1024] = {0};
 	GT_HDR *pHeader = (GT_HDR*)buf;
 	pHeader->gt_type = MT_MESG;
 	pHeader->nDataLength = nLen < 1024? nLen:1024;
-	strncpy(pHeader->data(),szText,pHeader->nDataLength);
-	strncpy(pHeader->szUser,m_szUser,15);
+	strncpy_s(pHeader->data(),pHeader->nDataLength, szText,pHeader->nDataLength);
+	strncpy_s(pHeader->szUser,m_szUser,15);
 	int nSends = Send(buf,pHeader->nDataLength+sizeof(GT_HDR), dwRemoteAddr==0?m_dwMultiAddr:dwRemoteAddr);
 	return nSends-sizeof(GT_HDR);
 }
@@ -210,7 +209,7 @@ void MulticastingTalk::DispatchMsg(GT_HDR *pHeader, int nLen)
 	{
 		char buf[sizeof(GT_HDR)] = {0};
 		GT_HDR* pSend = (GT_HDR*)buf;
-		strncpy(pSend->szUser,m_szUser,15);
+		strncpy_s(pSend->szUser,m_szUser,15);
 		pSend->gt_type = MT_MINE;
 		pSend->nDataLength = 0;
 		Send(buf,sizeof(GT_HDR),pHeader->dwAddr);
@@ -223,6 +222,6 @@ void MulticastingTalk::DispatchMsg(GT_HDR *pHeader, int nLen)
 		}
 		pHeader->gt_type = MT_JION;
 	}
-	::SendMessage(m_hNotifyWnd, WM_GROUPTALK,0,(LPARAM)pHeader));
+	::SendMessage(m_hNotifyWnd, WM_GROUPTALK,0,(LPARAM)pHeader);
 }
 

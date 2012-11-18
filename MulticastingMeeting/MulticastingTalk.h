@@ -35,7 +35,7 @@ typedef struct gt_hdr
 	DWORD		dwAddr;			// the user's addr who send the msg
 	char		szUser[15];		// name who send the msg
 	int			nDataLength;	// data length
-	char		*data() {	return (char*)(this+1);	}
+	char		*data() {	return (PCHAR)(this+1);	}
 }GT_HDR;
 
 DWORD WINAPI _GroupTalkEntry(LPVOID lpParam);	// work thread function

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="MulticastingMeeting"
-	ProjectGUID="{4278EB02-C7B1-4C10-8D14-84AAB9C6658C}"
-	RootNamespace="talk"
+	Name="PhoenixFW"
+	ProjectGUID="{2D410F06-9F9A-4D26-B358-41F149BC442E}"
+	RootNamespace="PhoenixFW"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -21,8 +21,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			UseOfATL="0"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -61,7 +60,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				UseLibraryDependencyInputs="false"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -173,11 +171,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Meeting.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\MulticastingTalk.cpp"
+				RelativePath=".\PhoenixFW.cpp"
 				>
 			</File>
 			<File
@@ -207,11 +201,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\initsock.h"
-				>
-			</File>
-			<File
-				RelativePath=".\MulticastingTalk.h"
+				RelativePath=".\PhoenixFW.h"
 				>
 			</File>
 			<File
@@ -220,10 +210,6 @@
 			</File>
 			<File
 				RelativePath=".\stdafx.h"
-				>
-			</File>
-			<File
-				RelativePath=".\talk.h"
 				>
 			</File>
 			<File
@@ -237,11 +223,27 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\dialog.rc"
+				RelativePath=".\res\bitmap1.bmp"
 				>
 			</File>
 			<File
-				RelativePath=".\GroupTalk.ico"
+				RelativePath=".\PhoenixFW.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\res\PhoenixFW.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\PhoenixFW.rc"
+				>
+			</File>
+			<File
+				RelativePath=".\res\PhoenixFW.rc2"
+				>
+			</File>
+			<File
+				RelativePath=".\small.ico"
 				>
 			</File>
 		</Filter>

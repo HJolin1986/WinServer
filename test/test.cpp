@@ -34,7 +34,7 @@ void main() {
 	// Bind the socket to the local IP address
 	// and port 27015
 	hostent* thisHost;
-	char* ip;
+	PCHAR ip;
 	u_short port;
 	port = 27015;
 	thisHost = gethostbyname("");
@@ -67,15 +67,15 @@ void main() {
 	int iOptVal;
 	int iOptLen = sizeof(int);
 
-	if (getsockopt(ListenSocket, SOL_SOCKET, SO_KEEPALIVE, (char*)&iOptVal, &iOptLen) != SOCKET_ERROR) {
+	if (getsockopt(ListenSocket, SOL_SOCKET, SO_KEEPALIVE, (PCHAR)&iOptVal, &iOptLen) != SOCKET_ERROR) {
 		printf("SO_KEEPALIVE Value: %ld\n", iOptVal);
 	}
 
-	if (setsockopt(ListenSocket, SOL_SOCKET, SO_KEEPALIVE, (char*)&bOptVal, bOptLen) != SOCKET_ERROR) {
+	if (setsockopt(ListenSocket, SOL_SOCKET, SO_KEEPALIVE, (PCHAR)&bOptVal, bOptLen) != SOCKET_ERROR) {
 		printf("Set SO_KEEPALIVE: ON\n");
 	}
 
-	if (getsockopt(ListenSocket, SOL_SOCKET, SO_KEEPALIVE, (char*)&iOptVal, &iOptLen) != SOCKET_ERROR) {
+	if (getsockopt(ListenSocket, SOL_SOCKET, SO_KEEPALIVE, (PCHAR)&iOptVal, &iOptLen) != SOCKET_ERROR) {
 		printf("SO_KEEPALIVE Value: %ld\n", iOptVal);
 	}
 

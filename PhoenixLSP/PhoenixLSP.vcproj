@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="MulticastingMeeting"
-	ProjectGUID="{4278EB02-C7B1-4C10-8D14-84AAB9C6658C}"
-	RootNamespace="talk"
+	Name="PhoenixLSP"
+	ProjectGUID="{027870A0-CDB9-4516-B165-2D29F90E50A1}"
+	RootNamespace="PhoenixLSP"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -20,9 +20,8 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
-			UseOfATL="0"
-			CharacterSet="2"
+			ConfigurationType="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -42,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PHOENIXLSP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -61,8 +60,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				UseLibraryDependencyInputs="false"
 				LinkIncremental="2"
+				ModuleDefinitionFile="PhoenixLSP.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -93,7 +92,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -116,7 +115,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PHOENIXLSP_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
@@ -135,6 +134,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
+				ModuleDefinitionFile="PhoenixLSP.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -173,11 +173,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Meeting.cpp"
+				RelativePath=".\Acl.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\MulticastingTalk.cpp"
+				RelativePath=".\PhoenixLSP.cpp"
 				>
 			</File>
 			<File
@@ -207,15 +207,23 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\initsock.h"
+				RelativePath=".\Acl.h"
 				>
 			</File>
 			<File
-				RelativePath=".\MulticastingTalk.h"
+				RelativePath="..\common\Debug.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Resource.h"
+				RelativePath="..\common\iocommon.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PhoenixLSP.h"
+				>
+			</File>
+			<File
+				RelativePath="..\common\PMacRes.h"
 				>
 			</File>
 			<File
@@ -223,11 +231,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\talk.h"
+				RelativePath=".\targetver.h"
 				>
 			</File>
 			<File
-				RelativePath=".\targetver.h"
+				RelativePath="..\common\TypeStruct.h"
 				>
 			</File>
 		</Filter>
@@ -237,11 +245,7 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\dialog.rc"
-				>
-			</File>
-			<File
-				RelativePath=".\GroupTalk.ico"
+				RelativePath=".\PhoenixLSP.def"
 				>
 			</File>
 		</Filter>

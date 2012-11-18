@@ -102,7 +102,7 @@ bool CIOCPUtility::Start(int nPort, int nMaxConnections, int nMaxFreeBuffer,
 	si.sin_family = AF_INET;
 	si.sin_port = ::htons(m_nPort);
 	si.sin_addr.S_un.S_addr = INADDR_ANY;
-	if (::bind(m_sListen,(sockaddr*)&si, sizeof(si)) == SOCKET_ERROR)
+	if (::bind(m_sListen,(PSOCKADDR)&si, sizeof(si)) == SOCKET_ERROR)
 	{
 		m_bServerStarted = FALSE;
 		goto FEND;

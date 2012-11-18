@@ -7,10 +7,10 @@
 
 #include "targetver.h"
 
-#include <atlbase.h>
 #include <stdio.h>
 #include <tchar.h>
 
-#pragma comment(lib,"WS2_32")
+#include <winsock2.h>
+#include <windows.h>
 
 // TODO: reference additional headers your program requires here

@@ -1,0 +1,8 @@
+LIBRARY	"DLLAviation"
+
+EXPORTS
+	DB_ReleaseTableCache @1
+	DB_GetInstance @2
+	DB_FreeInstance @3
+	DB_GetClassInstance @4
+	DB_GetConnString @5

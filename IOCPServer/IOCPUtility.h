@@ -28,6 +28,11 @@ typedef struct _CIOCPBuffer
 #define OP_WRITE 2
 #define OP_READ 3
 	_CIOCPBuffer *pNext;
+	void ToString()
+	{
+		printf("CIOCPBuffer to string ol=%d,%d,%d,%d, sclient=%d,",ol.InternalHigh,ol.Offset,ol.OffsetHigh,ol.Pointer, sClient);
+		printf("buf=%p,nlen=%d,sn=%d,op=%d\n",buf,nLen,nSequenceNumber,nOperation);
+	}
 }CIOCPBuffer;
 
 

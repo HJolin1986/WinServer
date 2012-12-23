@@ -57,6 +57,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// 创建事件对象，让ServerShutdown程序能够关闭自己
 	HANDLE hEvent = ::CreateEventA(NULL, FALSE, FALSE, "ShutdownEvent");
+	HANDLE hEvent1 = ::CreateEventA(NULL, FALSE, FALSE, "ShutdownEvent");
 	::WaitForSingleObject(hEvent, INFINITE);
 	::CloseHandle(hEvent);
 

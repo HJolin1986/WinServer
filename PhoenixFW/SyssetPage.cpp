@@ -104,7 +104,6 @@ void CSyssetPage::OnInstall()
 	//--------------------------------------------------
 	// install LSP need full DLL path,CPIOControl load CPIOControl using full path
 	// or the DLL CPIOControl loaded can't share memory with LSP DLL
-	// 完整路径，否则CPIOControl类加载的DLL不能和作为LSP的DLL共享内存
 	if(::GetFullPathName(PHOENIX_SERVICE_DLL_NAME, 256, szPathName, &p) != 0)
 	{
 		if(InstallProvider(szPathName))

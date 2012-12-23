@@ -97,7 +97,7 @@ bool CIOCPUtility::Start(int nPort, int nMaxConnections, int nMaxFreeBuffer,
 	m_bShutDown = FALSE;
 	m_bServerStarted = TRUE;
 	// Create listening socket, bind, then listen
-	m_sListen = ::WSASocket(AF_INET, SOCK_STREAM, 0,NULL,0,WSA_FLAG_OVERLAPPED);
+	m_sListen = ::WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP,NULL,0,WSA_FLAG_OVERLAPPED);
 	SOCKADDR_IN si;
 	si.sin_family = AF_INET;
 	si.sin_port = ::htons(m_nPort);
@@ -246,6 +246,12 @@ CIOCPBuffer *CIOCPUtility::AllocateBuffer(int nLen)
 	if (NULL == m_pFreeBufferList)
 	{
 		pBuffer = (CIOCPBuffer*)::HeapAlloc(GetProcessHeap(), NULL,sizeof(CIOCPBuffer)+BUFFER_SIZE);
+		pBuffer->ol.InternalHigh = 4040328;
+		pBuffer->ol.Offset = 0;
+		pBuffer->ol.OffsetHigh = 0;
+		pBuffer->ol.Pointer = 0;
+		pBuffer->nSequenceNumber = 0;
+		pBuffer->ToString();
 	}
 	else
 	{
@@ -260,6 +266,7 @@ CIOCPBuffer *CIOCPUtility::AllocateBuffer(int nLen)
 		pBuffer->buf = (char *)(pBuffer+1);
 		pBuffer->nLen = nLen;
 	}
+
 	return pBuffer;
 }
 void CIOCPUtility::ReleaseBuffer(CIOCPBuffer *pBuffer)
@@ -511,6 +518,8 @@ bool CIOCPUtility::PostAccept(CIOCPBuffer *pBuffer)
 	pBuffer->nOperation = OP_ACCEPT;
 	DWORD dwBytes;
 	pBuffer->sClient = ::WSASocket(AF_INET, SOCK_STREAM,0,NULL,0,WSA_FLAG_OVERLAPPED);
+
+	pBuffer->ToString();
 	BOOL b = m_lpfnAcceptEx(m_sListen,
 		pBuffer->sClient,
 		pBuffer->buf,
@@ -519,10 +528,13 @@ bool CIOCPUtility::PostAccept(CIOCPBuffer *pBuffer)
 		sizeof(sockaddr_in)+16,
 		&dwBytes,
 		&pBuffer->ol);
+	pBuffer->ToString();
 	if (!b && ::WSAGetLastError() != WSA_IO_PENDING)
 	{
+		fprintf(stderr, "PostAccept failed: %d\n", WSAGetLastError());
 		return FALSE;
 	}
+	puts("PostAccept sucess");
 	return TRUE;
 }
 bool CIOCPUtility::PostSend(CIOCPContext* pContext, CIOCPBuffer*pBuffer)
@@ -573,13 +585,14 @@ bool CIOCPUtility::PostRecv(CIOCPContext* pContext, CIOCPBuffer*pBuffer)
 	// increase the amount of overlap I/O on socket
 	pContext->nOutstandingRecv ++;
 	pContext->nReadSeuence ++;
-
+	puts("PostRecv");
 	::LeaveCriticalSection(&pContext->lock);
 }
 void CIOCPUtility::HandleIO(DWORD dwKey, CIOCPBuffer *pBuffer, DWORD dwTrans, int nError)
 {
 	CIOCPContext *pContext = (CIOCPContext *)dwKey;
 
+	puts("IO");
 #ifdef _DEBUG
 	::OutputDebugStringA("	HandleIO... \n");
 #endif // _DEBUG
@@ -587,6 +600,8 @@ void CIOCPUtility::HandleIO(DWORD dwKey, CIOCPBuffer *pBuffer, DWORD dwTrans, in
 	// 1£©first decrease nOutstandingRecv
 	if(pContext != NULL)
 	{
+
+		puts("pContext != NULL");
 		::EnterCriticalSection(&pContext->lock);
 
 		if(pBuffer->nOperation == OP_READ)
@@ -613,6 +628,7 @@ void CIOCPUtility::HandleIO(DWORD dwKey, CIOCPBuffer *pBuffer, DWORD dwTrans, in
 	}
 	else
 	{
+		puts("pContext == NULL");
 		RemovePendingAccept(pBuffer);
 	}
 
@@ -801,6 +817,7 @@ DWORD WINAPI CIOCPUtility::_ListenThreadProc(LPVOID lpParam)
 
 	// first post accept
 	CIOCPBuffer *pBuffer;
+	Sleep(1000);
 	for(int i=0; i<pThis->m_nInitialAccepts; i++)
 	{
 		pBuffer = pThis->AllocateBuffer(BUFFER_SIZE);
@@ -824,8 +841,10 @@ DWORD WINAPI CIOCPUtility::_ListenThreadProc(LPVOID lpParam)
 	// infinite cycle, handle envent
 	while(TRUE)
 	{
+		puts("_ListenThreadProc");
 		int nIndex = ::WSAWaitForMultipleEvents(nEventCount, hWaitEvents, FALSE, 60*1000, FALSE);
 
+		printf("_ListenThreadProc index=%d\n", nIndex);
 		// first check if the serve is shutdown
 		if(pThis->m_bShutDown || nIndex == WSA_WAIT_FAILED)
 		{
@@ -931,11 +950,13 @@ DWORD WINAPI CIOCPUtility::_WorkerThreadProc(LPVOID lpParam)
 	DWORD dwKey;
 	DWORD dwTrans;
 	LPOVERLAPPED lpol;
+	puts("WorkThreadProc start");
 	while(TRUE)
 	{
 		// wait all complete on the complete port
 		BOOL bOK = ::GetQueuedCompletionStatus(pThis->m_hCompletion, 
 			&dwTrans, (LPDWORD)&dwKey, (LPOVERLAPPED*)&lpol, WSA_INFINITE);
+		printf("DWKEY=%d, handle=%d\n", dwKey,pThis->m_hCompletion);
 		if (FALSE == bOK)
 		{
 			int error = GetLastError();
@@ -944,6 +965,8 @@ DWORD WINAPI CIOCPUtility::_WorkerThreadProc(LPVOID lpParam)
 				::OutputDebugStringA("	GetQueuedCompletionStatus error\n");
 				::exit(0);
 			}
+
+			printf("WorkThreadProc error = %d\n", error);
 			continue;
 		}
 		if(dwTrans == -1) // exited notification announced by user
@@ -975,6 +998,7 @@ DWORD WINAPI CIOCPUtility::_WorkerThreadProc(LPVOID lpParam)
 				nError = ::WSAGetLastError();
 			}
 		}
+		puts("handio");
 		pThis->HandleIO(dwKey, pBuffer, dwTrans, nError);
 	}
 

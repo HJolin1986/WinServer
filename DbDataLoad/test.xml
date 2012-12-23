@@ -1,0 +1,198 @@
+<xml xmlns:s='uuid:BDC6E3F0-6DA3-11d1-A2A3-00AA00C14882'
+	xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882'
+	xmlns:rs='urn:schemas-microsoft-com:rowset'
+	xmlns:z='#RowsetSchema'>
+<s:Schema id='RowsetSchema'>
+	<s:ElementType name='row' content='eltOnly' rs:CommandTimeout='30' rs:updatable='true'>
+		<s:AttributeType name='fltNum' rs:number='1' rs:writeunknown='true' rs:basecatalog='aviation' rs:basetable='planeinfo'
+			 rs:basecolumn='fltNum'>
+			<s:datatype dt:type='string' dt:maxLength='20' rs:maybenull='false'/>
+		</s:AttributeType>
+		<s:AttributeType name='SSR' rs:number='2' rs:writeunknown='true' rs:basecatalog='aviation' rs:basetable='planeinfo'
+			 rs:basecolumn='SSR'>
+			<s:datatype dt:type='string' dt:maxLength='20' rs:maybenull='false'/>
+		</s:AttributeType>
+		<s:AttributeType name='planeType' rs:number='3' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='planeType'>
+			<s:datatype dt:type='string' dt:maxLength='10'/>
+		</s:AttributeType>
+		<s:AttributeType name='cruiseFL' rs:number='4' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='cruiseFL'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='FL' rs:number='5' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='FL'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='startTime' rs:number='6' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='startTime'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='fromAirport' rs:number='7' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='fromAirport'>
+			<s:datatype dt:type='string' dt:maxLength='4'/>
+		</s:AttributeType>
+		<s:AttributeType name='toAirport' rs:number='8' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='toAirport'>
+			<s:datatype dt:type='string' dt:maxLength='4'/>
+		</s:AttributeType>
+		<s:AttributeType name='pa' rs:number='9' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='pa'>
+			<s:datatype dt:type='string' dt:maxLength='500'/>
+		</s:AttributeType>
+		<s:AttributeType name='fourCode' rs:number='10' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='fourCode'>
+			<s:datatype dt:type='string' dt:maxLength='4'/>
+		</s:AttributeType>
+		<s:AttributeType name='la' rs:number='11' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='la'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='lo' rs:number='12' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='lo'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='initialSpeed' rs:number='13' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='initialSpeed'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='initialHeading' rs:number='14' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='initialHeading'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='presentLo' rs:number='15' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='presentLo'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='presentLa' rs:number='16' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='presentLa'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='nowheading' rs:number='17' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='nowheading'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='intendheading' rs:number='18' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='intendheading'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='nowspeed' rs:number='19' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='nowspeed'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='intendspeed' rs:number='20' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='intendspeed'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='nowlevel' rs:number='21' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='nowlevel'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='intendlevel' rs:number='22' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='intendlevel'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='accelerate' rs:number='23' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='accelerate'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='decelerate' rs:number='24' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='decelerate'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='climbrate' rs:number='25' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='climbrate'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='descentrate' rs:number='26' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='descentrate'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='remember_x1' rs:number='27' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='remember_x1'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='remember_y1' rs:number='28' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='remember_y1'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='remember_x2' rs:number='29' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='remember_x2'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='remember_y2' rs:number='30' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='remember_y2'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='remember_x3' rs:number='31' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='remember_x3'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='remember_y3' rs:number='32' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='remember_y3'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='remember_x4' rs:number='33' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='remember_x4'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='remember_y4' rs:number='34' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='remember_y4'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='remember_x5' rs:number='35' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='remember_x5'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='remember_y5' rs:number='36' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='remember_y5'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='report_level' rs:number='37' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='report_level'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='CALLSIGN' rs:number='38' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='CALLSIGN'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='autoILS' rs:number='39' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='autoILS'>
+			<s:datatype dt:type='string' dt:maxLength='1' rs:fixedlength='true'/>
+		</s:AttributeType>
+		<s:AttributeType name='planeAutoFly' rs:number='40' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='planeAutoFly'>
+			<s:datatype dt:type='string' dt:maxLength='1' rs:fixedlength='true'/>
+		</s:AttributeType>
+		<s:AttributeType name='TiaosuSign' rs:number='41' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='TiaosuSign'>
+			<s:datatype dt:type='string' dt:maxLength='1' rs:fixedlength='true'/>
+		</s:AttributeType>
+		<s:AttributeType name='RunwayNumber' rs:number='42' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='RunwayNumber'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='DestinationAirport' rs:number='43' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='DestinationAirport'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:AttributeType name='EstArrvialtime' rs:number='44' rs:nullable='true' rs:writeunknown='true' rs:basecatalog='aviation'
+			 rs:basetable='planeinfo' rs:basecolumn='EstArrvialtime'>
+			<s:datatype dt:type='string' dt:maxLength='20'/>
+		</s:AttributeType>
+		<s:extends type='rs:rowbase'/>
+	</s:ElementType>
+</s:Schema>
+<rs:data>
+	<z:row fltNum='1234D' SSR='2356' planeType='B737-t' cruiseFL='CHARGB' FL='497' startTime='0' fromAirport='ZUUU'
+		 toAirport='ZBAA' pa=' 745 - 749 - 729 - 676 - 684 - 1384 - 1382 -p1-p2-' fourCode='ZUUU' la='0.533173' lo='1.814302'
+		 initialSpeed='0' initialHeading='2.43' presentLo='' presentLa='' nowheading='' intendheading='' nowspeed='' intendspeed=''
+		 nowlevel='' intendlevel='' accelerate='' decelerate='' climbrate='' descentrate='' remember_x1='1.814302' remember_y1='0.533173'
+		 remember_x2='' remember_y2='' remember_x3='' remember_y3='' remember_x4='' remember_y4='' remember_x5='' remember_y5=''
+		 report_level='' CALLSIGN='' autoILS='1' planeAutoFly='1' TiaosuSign='1' RunwayNumber='' DestinationAirport='ZBAA'
+		 EstArrvialtime=''/>
+	<z:row fltNum='1234D' SSR='2368' planeType='B737-t' cruiseFL='CHARGA' FL='498' startTime='2' fromAirport='ZUUU'
+		 toAirport='ZBAA' pa=' 745 - 759 - 729 - 676 - 684 - 1384 - 1322 -p1-p2-' fourCode='ZUUU' la='0.633173' lo='1.914302'
+		 initialSpeed='2' initialHeading='2.53' autoILS='1' planeAutoFly='2' TiaosuSign='3' DestinationAirport='ZBAA'/>
+</rs:data>
+</xml>
